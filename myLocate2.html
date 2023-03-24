@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<head>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=MyApikey&callback=initMap"></script>
+</head>
+<body>
+<button onclick="toggleLocation()">Konumumu Göster</button>
+<p id="demo"></p>
+
+<script>
+var x = document.getElementById("demo");
+var isLocationShown = false;
+var geocoder;
+
+function toggleLocation() {
+    if (!isLocationShown) {
+        getLocation();
+    } else {
+        x.innerHTML = "";
+    }
+    isLocationShown = !isLocationShown;
+}
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    getAddress(position.coords.latitude, position.coords.longitude);
+}
+
+function getAddress(latitude, longitude) {
+    geocoder = new google.maps.Geocoder();
+    var latlng = new google.maps.LatLng(latitude, longitude);
+    geocoder.geocode({'latLng': latlng}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+            if (results[1]) {
+                x.innerHTML = results[1].formatted_address;
+            } else {
+                x.innerHTML = 'No results found';
+            }
+        } else {
+            x.innerHTML = 'Geocoder failed due to: ' + status;
+        }
+    });
+}
+</script>
+
+</body>
+</html>
